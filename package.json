@@ -1,5 +1,5 @@
 {
-  "name": "level-sets",
+  "name": "level-set2",
   "version": "0.0.1",
   "description": "Treat a value in level like a Set",
   "main": "sets.js",
