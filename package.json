@@ -1,0 +1,28 @@
+{
+  "name": "level-sets",
+  "version": "0.0.0",
+  "description": "Treat a value in level like a Set",
+  "main": "sets.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "tap": "^0.4.9",
+    "level-test": "^1.6.2"
+  },
+  "scripts": {
+    "test": "tap test.js"
+  },
+  "keywords": [
+    "leveldb"
+  ],
+  "author": "David Björklund <david.bjorklund@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kesla/level-sets.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kesla/level-sets/issues"
+  },
+  "homepage": "https://github.com/kesla/level-sets"
+}
