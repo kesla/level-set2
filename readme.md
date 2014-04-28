@@ -1,4 +1,4 @@
-# level-sets
+# level-sets[![build status](https://secure.travis-ci.org/kesla/level-sets.png)](http://travis-ci.org/kesla/level-sets)
 
 Treat a value in level like a Set
 
