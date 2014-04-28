@@ -1,11 +1,11 @@
-# level-sets[![build status](https://secure.travis-ci.org/kesla/level-sets.png)](http://travis-ci.org/kesla/level-sets)
+# level-set2[![build status](https://secure.travis-ci.org/kesla/level-sets.png)](http://travis-ci.org/kesla/level-sets)
 
 Treat a value in level like a Set
 
 ## Installation
 
 ```
-npm install level-sets
+npm install level-set2
 ```
 
 ## Example
