@@ -41,3 +41,20 @@ test('put key in db', function (t) {
     })
   })
 })
+
+test('put and then del and then get', function (t) {
+  var db = level('db4')
+    , set = Set(db)
+
+  set.put('key', 'foo', function () {
+    set.del('key', 'foo', function () {
+      set.get('key', function (err, array) {
+        t.deepEqual(array, [])
+        db.get('key', function (err, data) {
+          t.equal(err.notFound, true)
+          t.end()
+        })
+      })
+    })
+  })
+});

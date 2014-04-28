@@ -34,42 +34,21 @@ Sets.prototype.get = function (key, callback) {
   })
 }
 
-/*
-, getAsArray = function (db, key, callback) {
-    db.get(key, function (err, array) {
-      if (err) {
-        if (err.notFound){
-          callback(null, [])
-        } else{
-          callback(err)
-        }
-      } else {
-        callback(null, JSON.parse(array))
-      }
-    })
-  }
-, addToSet = function (db, key, value, callback) {
-    getAsArray(db, key, function (err, array) {
-      if (err)
-        return callback(err)
+Sets.prototype.del = function (key,value, callback) {
+  var self = this
 
-      if (array.indexOf(value) !== -1)
-        return callback()
+  this.get(key, function (err, array) {
+    if (err) return callback(err)
 
-      array.push(value)
+    if (array.indexOf(value) === -1) return callback()
 
-      db.put(key, JSON.stringify(array), callback)
-    })
-  }
-, removeFromSet = function (db, key, callback) {
-    getAsArray(db, key, function (err, array) {
-      if (err) return callback(err)
-      if (array.indexOf(key) === -1) return callback()
+    array.splice(array.indexOf(value), 1)
 
-      array = array.splice(array.indexOf(key), 1)
-
-      db.put(key, JSON.stringify(array), callback)
-    })
-  }*/
+    if (array.length === 0)
+      self.db.del(key, callback)
+    else
+      self.db.put(key, JSON.stringify(array), callback)
+  })
+}
 
 module.exports = Sets
