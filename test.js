@@ -57,12 +57,15 @@ test('put and then del and then get', function (t) {
     , set = Set(db)
 
   set.put('key', 'foo', function () {
-    set.del('key', 'foo', function () {
-      set.get('key', function (err, array) {
-        t.deepEqual(array, [])
-        db.get('key', function (err, data) {
-          t.equal(err.notFound, true)
-          t.end()
+    set.get('key', function (err, array) {
+      t.deepEqual(array, ['foo'])
+      set.del('key', 'foo', function () {
+        set.get('key', function (err, array) {
+          t.deepEqual(array, [])
+          db.get('key', function (err, data) {
+            t.equal(err.notFound, true)
+            t.end()
+          })
         })
       })
     })
@@ -109,5 +112,43 @@ test('stream', function (t) {
         })
       })
     })
+  })
+})
+
+test('concurrency when doing put', function (t) {
+  var db = level('db6')
+    , set = Set(db)
+    , count = 2
+    , done = function () {
+        count = count - 1;
+
+        if (count === 0)
+          set.get('hello', function (err, array) {
+            t.deepEqual(array.sort(), ['world', 'worldz'])
+            t.end();
+          });
+      }
+
+  set.put('hello', 'world', done)
+  set.put('hello', 'worldz', done)
+})
+
+test('concurrency when doing del', function (t) {
+  var db = level('db7')
+    , set = Set(db)
+    , count = 2
+    , done = function () {
+        count = count - 1
+
+        if (count === 0)
+          set.get('hello', function (err, array) {
+            t.deepEqual(array.sort(), ['world'])
+            t.end()
+          })
+      }
+
+  set.put('hello', 'worldz', function () {
+    set.del('hello', 'worldz', done)
+    set.put('hello', 'world', done)
   })
 })
