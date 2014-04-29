@@ -1,7 +1,7 @@
 var test = require('tap').test
   , level = require('level-test')()
 
-  , Set = require('./sets')
+  , Set = require('./sets')()
 
 test('getAll() when no data in db', function (t) {
   var set = Set(level('db1'))

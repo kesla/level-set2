@@ -1,12 +1,11 @@
 var clone = require('clone')
-  , lock = require('lock')
 
-  , Sets = function (db) {
+  , Sets = function (db, lock) {
       if (!(this instanceof Sets))
         return new Sets(db)
 
       this.db = db
-      this.lock = lock()
+      this.lock = lock
     }
 
 Sets.prototype.add = function (key, value, callback) {
@@ -63,4 +62,10 @@ Sets.prototype.remove = function (key,value, callback) {
   })
 }
 
-module.exports = Sets
+module.exports = function () {
+  var lock = require('lock')()
+
+  return function (db) {
+    return new Sets(db, lock)
+  }
+}
