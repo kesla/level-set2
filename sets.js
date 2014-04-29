@@ -1,9 +1,11 @@
-var Sets = function (db) {
-  if (!(this instanceof Sets))
-    return new Sets(db)
+var clone = require('clone')
 
-  this.db = db
-}
+  , Sets = function (db) {
+      if (!(this instanceof Sets))
+        return new Sets(db)
+
+      this.db = db
+    }
 
 Sets.prototype.put = function (key, value, callback) {
   var self = this
@@ -49,6 +51,26 @@ Sets.prototype.del = function (key,value, callback) {
     else
       self.db.put(key, JSON.stringify(array), callback)
   })
+}
+
+Sets.prototype.createReadStream = function (opts) {
+  opts = clone(opts) || {}
+
+  opts.valueEncoding = 'json'
+
+  return this.db.createReadStream(opts)
+}
+
+Sets.prototype.createValueStream = function (opts) {
+  opts = clone(opts) || {}
+
+  opts.valueEncoding = 'json'
+
+  return this.db.createValueStream(opts)
+}
+
+Sets.prototype.createKeyStream = function (opts) {
+  return this.db.createKeyStream(opts)
 }
 
 module.exports = Sets

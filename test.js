@@ -1,8 +1,18 @@
-var test = require('tap').test,
+var test = require('tap').test
+  , level = require('level-test')()
 
-  level = require('level-test')()
+  , Set = require('./sets')
 
-  Set = require('./sets')
+  , collect = function (stream, callback) {
+      var array = []
+
+      stream.on('data', function (chunk) {
+        array.push(chunk)
+      })
+      stream.once('end', function () {
+        callback(array)
+      })
+    }
 
 test('get key not in db', function (t) {
   var set = Set(level('db1'))
@@ -57,4 +67,47 @@ test('put and then del and then get', function (t) {
       })
     })
   })
-});
+})
+
+test('stream', function (t) {
+  var db = level('db5')
+    , set = Set(db)
+
+  db.put('foo', JSON.stringify([1,2,3]), function () {
+    db.put('bar', JSON.stringify(['beep', 'boop']), function () {
+      collect(set.createReadStream(), function (array) {
+        t.deepEqual(
+            array
+          , [
+              {
+                  key: 'bar'
+                , value: ['beep', 'boop']
+              }
+            , {
+                  key: 'foo'
+                , value: [1, 2, 3]
+              }
+            ]
+        )
+
+        collect(set.createValueStream(), function (array) {
+          t.deepEqual(
+              array
+            , [
+                  ['beep', 'boop']
+                , [1, 2, 3]
+              ]
+          )
+
+          collect(set.createKeyStream(), function (array) {
+            t.deepEqual(
+                array
+              , ['bar', 'foo']
+            )
+            t.end()
+          })
+        })
+      })
+    })
+  })
+})
