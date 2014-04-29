@@ -9,13 +9,13 @@ var clone = require('clone')
       this.lock = lock()
     }
 
-Sets.prototype.put = function (key, value, callback) {
+Sets.prototype.add = function (key, value, callback) {
   var self = this
 
   this.lock(key, function (release) {
     callback = release(callback)
 
-    self.get(key, function (err, array) {
+    self.getAll(key, function (err, array) {
 
       if (err) return callback(err)
 
@@ -28,7 +28,7 @@ Sets.prototype.put = function (key, value, callback) {
   })
 }
 
-Sets.prototype.get = function (key, callback) {
+Sets.prototype.getAll = function (key, callback) {
   this.db.get(key, { valueEncoding: 'json' }, function (err, array) {
     if (err) {
       if (err.notFound){
@@ -42,13 +42,13 @@ Sets.prototype.get = function (key, callback) {
   })
 }
 
-Sets.prototype.del = function (key,value, callback) {
+Sets.prototype.remove = function (key,value, callback) {
   var self = this
 
   this.lock(key, function (release) {
     callback = release(callback)
 
-    self.get(key, function (err, array) {
+    self.getAll(key, function (err, array) {
       if (err) return callback(err)
 
       if (array.indexOf(value) === -1) return callback()
@@ -61,26 +61,6 @@ Sets.prototype.del = function (key,value, callback) {
         self.db.put(key, array, { valueEncoding: 'json' }, callback)
     })
   })
-}
-
-Sets.prototype.createReadStream = function (opts) {
-  opts = clone(opts) || {}
-
-  opts.valueEncoding = 'json'
-
-  return this.db.createReadStream(opts)
-}
-
-Sets.prototype.createValueStream = function (opts) {
-  opts = clone(opts) || {}
-
-  opts.valueEncoding = 'json'
-
-  return this.db.createValueStream(opts)
-}
-
-Sets.prototype.createKeyStream = function (opts) {
-  return this.db.createKeyStream(opts)
 }
 
 module.exports = Sets
