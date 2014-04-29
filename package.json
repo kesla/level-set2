@@ -20,10 +20,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/kesla/level-sets.git"
+    "url": "git://github.com/kesla/level-set2.git"
   },
   "bugs": {
-    "url": "https://github.com/kesla/level-sets/issues"
+    "url": "https://github.com/kesla/level-set2/issues"
   },
-  "homepage": "https://github.com/kesla/level-sets"
+  "homepage": "https://github.com/kesla/level-set2"
 }
