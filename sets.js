@@ -18,12 +18,12 @@ Sets.prototype.put = function (key, value, callback) {
 
     array.push(value)
 
-    self.db.put(key, JSON.stringify(array), callback)
+    self.db.put(key, array, { valueEncoding: 'json' }, callback)
   })
 }
 
 Sets.prototype.get = function (key, callback) {
-  this.db.get(key, function (err, array) {
+  this.db.get(key, { valueEncoding: 'json' }, function (err, array) {
     if (err) {
       if (err.notFound){
         callback(null, [])
@@ -31,7 +31,7 @@ Sets.prototype.get = function (key, callback) {
         callback(err)
       }
     } else {
-      callback(null, JSON.parse(array))
+      callback(null, array)
     }
   })
 }
@@ -49,7 +49,7 @@ Sets.prototype.del = function (key,value, callback) {
     if (array.length === 0)
       self.db.del(key, callback)
     else
-      self.db.put(key, JSON.stringify(array), callback)
+      self.db.put(key, array, { valueEncoding: 'json' }, callback)
   })
 }
 
