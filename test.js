@@ -18,7 +18,7 @@ test('get key not in db', function (t) {
   var set = Set(level('db1'))
 
   set.get('key', function (err, array) {
-    t.deepEqual(array, []);
+    t.deepEqual(array, [])
     t.end()
   })
 })
@@ -120,13 +120,13 @@ test('concurrency when doing put', function (t) {
     , set = Set(db)
     , count = 2
     , done = function () {
-        count = count - 1;
+        count = count - 1
 
         if (count === 0)
           set.get('hello', function (err, array) {
             t.deepEqual(array.sort(), ['world', 'worldz'])
-            t.end();
-          });
+            t.end()
+          })
       }
 
   set.put('hello', 'world', done)
