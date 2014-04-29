@@ -1,6 +1,6 @@
 {
   "name": "level-set2",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Treat a value in level like a Set",
   "main": "sets.js",
   "dependencies": {
