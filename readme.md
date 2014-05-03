@@ -2,6 +2,10 @@
 
 Treat a value in level like a Set
 
+[![NPM](https://nodei.co/npm/level-set2.png?downloads&stars)](https://nodei.co/npm/level-set2/)
+
+[![NPM](https://nodei.co/npm-dl/level-set2.png)](https://nodei.co/npm/level-set2/)
+
 ## Installation
 
 ```
@@ -15,13 +19,13 @@ npm install level-set2
 ```javascript
 var db = require('level-test')()('sets')
 
-  set = require('./sets')(db)
+  set = require('./sets')()(db)
 
-set.put('key', 'value', function () {
-  set.put('key', 'value', function () {
-    set.get('key', function (err, array) {
+set.add('key', 'value', function () {
+  set.add('key', 'value', function () {
+    set.getAll('key', function (err, array) {
       console.log('key', JSON.stringify(array, null, 4))
-      set.get('bar', function (err, array) {
+      set.getAll('bar', function (err, array) {
         console.log('empty array', JSON.stringify(array, null, 4))
       })
     })
