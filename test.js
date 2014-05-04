@@ -24,6 +24,22 @@ test('getAll() when data in db', function (t) {
   })
 })
 
+test('getAll() returns same data every time', function (t) {
+  var db = level('getAll-same-data')
+    , set = Set(db)
+
+  db.put('key', JSON.stringify(['hello', 'world']), function () {
+    set.getAll('key', function (err, array) {
+      array.push('beep')
+      array.push('boop')
+      set.getAll('key', function (err, array) {
+        t.deepEqual(array, [ 'hello', 'world' ])
+        t.end()
+      })
+    })
+  })  
+})
+
 test('add()', function (t) {
   var db = level('db3')
     , set = Set(db)
@@ -96,5 +112,24 @@ test('concurrency when doing remove()', function (t) {
   set.add('hello', 'worldz', function () {
     set.remove('hello', 'worldz', done)
     set.add('hello', 'world', done)
+  })
+})
+
+test('multiple dbs using same set doing concurrency', function (t) {
+  var db = level('multiple-same-set-concurrency')
+    , count = 2
+    , done = function () {
+        count = count - 1
+
+        if (count === 0)
+          Set(db).getAll('hello', function (err, array) {
+            t.deepEqual(array.sort(), ['world'])
+            t.end()
+          })
+      }
+
+  Set(db).add('hello', 'worldz', function () {
+    Set(db).remove('hello', 'worldz', done)
+    Set(db).add('hello', 'world', done)
   })
 })
