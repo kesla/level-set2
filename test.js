@@ -136,3 +136,40 @@ test('sublevel', function (t) {
     set.sublevel('foo').add('hello', 'world', done)
   })
 })
+
+test('same key on main db as in sublevel', function (t) {
+  var db = subLevel(level('sublevel-same-key'))
+    , set = Set(db)
+    , count = 6
+    , done = function () {
+        count = count - 1
+
+        if (count === 0)
+          set.getAll('hello', function (err, array) {
+            t.deepEqual(array.sort(), ['world'])
+            set.sublevel('foo').getAll('hello', function (err, array) {
+              t.deepEqual(array, ['world2'])
+              set.sublevel('foo').sublevel('bar').getAll('hello', function (err, array) {
+                t.deepEqual(array, ['world3'])
+                t.end()
+              })
+            })
+          })
+      }
+
+  set.add('hello', 'worldz', function () {
+    set.remove('hello', 'worldz', done)
+    set.add('hello', 'world', done)
+  })
+
+  set.sublevel('foo').add('hello', 'worldz2', function () {
+    set.sublevel('foo').remove('hello', 'worldz2', done)
+    set.sublevel('foo').add('hello', 'world2', done)
+  })
+
+  set.sublevel('foo').sublevel('bar').add('hello', 'worldz3', function () {
+    set.sublevel('foo').sublevel('bar').remove('hello', 'worldz3', done)
+    set.sublevel('foo').sublevel('bar').add('hello', 'world3', done)
+  })
+
+})

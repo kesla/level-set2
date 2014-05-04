@@ -1,12 +1,18 @@
 var encode = require('level-encode')
+  , inherits = require('util').inherits
   , Lock = require('lock')
 
-  , Sets = function (db, lock) {
+  , Sets = function (db, lock, child) {
       if (!(this instanceof Sets))
-        return new Sets(db, lock)
+        return new Sets(db, lock, child)
 
-      this.db = encode(db, 'json')
-      this.lock = lock || Lock()
+      if (child) {
+        this.db = db
+        this.lock = lock
+      } else {
+        this.db = encode(db, 'json')
+        this.lock = Lock()
+      }
     }
 
 Sets.prototype.add = function (key, value, callback) {
@@ -64,7 +70,7 @@ Sets.prototype.remove = function (key, value, callback) {
 }
 
 Sets.prototype.sublevel = function (sub) {
-  return Sets(this.db.sublevel(sub), this.lock)
+  return new Sets(this.db.sublevel(sub), this.lock, true)
 }
 
 module.exports = Sets
