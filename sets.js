@@ -81,7 +81,6 @@ Sets.prototype.sublevel = function (sub) {
 
 ['createReadStream', 'createValueStream', 'createKeyStream'].forEach(function (key) {
   Sets.prototype[key] = function (opts) {
-    console.log(this.db[key], key)
     return this.db[key](opts)
   }
 })
