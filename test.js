@@ -145,13 +145,18 @@ test('same key on main db as in sublevel', function (t) {
         count = count - 1
 
         if (count === 0)
-          set.getAll('hello', function (err, array) {
+          // use new set-instances to avoid the cache
+          Set(db).getAll('hello', function (err, array) {
             t.deepEqual(array.sort(), ['world'])
-            set.sublevel('foo').getAll('hello', function (err, array) {
+            Set(db).sublevel('foo').getAll('hello', function (err, array) {
               t.deepEqual(array, ['world2'])
-              set.sublevel('foo').sublevel('bar').getAll('hello', function (err, array) {
+              Set(db).sublevel('foo').sublevel('bar').getAll('hello', function (err, array) {
                 t.deepEqual(array, ['world3'])
-                t.end()
+                // check that the cache works as expected also
+                set.sublevel('foo').sublevel('bar').getAll('hello', function (err, array) {
+                  t.deepEqual(array, ['world3'])
+                  t.end()
+                })
               })
             })
           })
