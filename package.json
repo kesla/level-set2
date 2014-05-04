@@ -4,9 +4,9 @@
   "description": "Treat a value in level like a Set",
   "main": "sets.js",
   "dependencies": {
-    "clone": "^0.1.11",
     "lock": "^0.1.0",
-    "level-encode": "^1.1.0"
+    "level-encode": "^1.2.2",
+    "level-sublevel": "^5.2.0"
   },
   "devDependencies": {
     "tap": "^0.4.9",

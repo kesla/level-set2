@@ -1,12 +1,12 @@
-var clone = require('clone')
-  , encode = require('level-encode')
+var encode = require('level-encode')
+  , Lock = require('lock')
 
   , Sets = function (db, lock) {
       if (!(this instanceof Sets))
-        return new Sets(db)
+        return new Sets(db, lock)
 
       this.db = encode(db, 'json')
-      this.lock = lock
+      this.lock = lock || Lock()
     }
 
 Sets.prototype.add = function (key, value, callback) {
@@ -42,7 +42,7 @@ Sets.prototype.getAll = function (key, callback) {
   })
 }
 
-Sets.prototype.remove = function (key,value, callback) {
+Sets.prototype.remove = function (key, value, callback) {
   var self = this
 
   this.lock(key, function (release) {
@@ -63,10 +63,8 @@ Sets.prototype.remove = function (key,value, callback) {
   })
 }
 
-module.exports = function () {
-  var lock = require('lock')()
-
-  return function (db) {
-    return new Sets(db, lock)
-  }
+Sets.prototype.sublevel = function (sub) {
+  return Sets(this.db.sublevel(sub), this.lock)
 }
+
+module.exports = Sets

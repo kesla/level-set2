@@ -1,7 +1,9 @@
-var test = require('tap').test
+var subLevel = require('level-sublevel')
+  , test = require('tap').test
+
   , level = require('level-test')()
 
-  , Set = require('./sets')()
+  , Set = require('./sets')
 
 test('getAll() when no data in db', function (t) {
   var set = Set(level('db1'))
@@ -115,21 +117,22 @@ test('concurrency when doing remove()', function (t) {
   })
 })
 
-test('multiple dbs using same set doing concurrency', function (t) {
-  var db = level('multiple-same-set-concurrency')
+test('sublevel', function (t) {
+  var db = subLevel(level('sublevel'))
+    , set = Set(db)
     , count = 2
     , done = function () {
         count = count - 1
 
         if (count === 0)
-          Set(db).getAll('hello', function (err, array) {
+          set.sublevel('foo').getAll('hello', function (err, array) {
             t.deepEqual(array.sort(), ['world'])
             t.end()
           })
       }
 
-  Set(db).add('hello', 'worldz', function () {
-    Set(db).remove('hello', 'worldz', done)
-    Set(db).add('hello', 'world', done)
+  set.sublevel('foo').add('hello', 'worldz', function () {
+    set.sublevel('foo').remove('hello', 'worldz', done)
+    set.sublevel('foo').add('hello', 'world', done)
   })
 })
