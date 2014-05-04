@@ -57,3 +57,8 @@ var set = require('../sets')(require('level-sublevel')(require('level-test')()('
     }
 
 add()
+console.time('total')
+
+process.once('exit', function () {
+  console.timeEnd('total')
+})
