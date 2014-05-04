@@ -77,6 +77,13 @@ Sets.prototype.sublevel = function (sub) {
   this._children[sub] = this._children[sub] || new Sets(this.db.sublevel(sub), this.cache, true)
 
   return this._children[sub]
-}
+};
+
+['createReadStream', 'createValueStream', 'createKeyStream'].forEach(function (key) {
+  Sets.prototype[key] = function (opts) {
+    console.log(this.db[key], key)
+    return this.db[key](opts)
+  }
+})
 
 module.exports = Sets

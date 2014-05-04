@@ -5,6 +5,18 @@ var subLevel = require('level-sublevel')
 
   , Set = require('./sets')
 
+  , collect = function (stream, callback) {
+      var array = []
+
+      stream.on('data', function (chunk) {
+        array.push(chunk)
+      })
+      stream.once('end', function () {
+        callback(array)
+      })
+    }
+
+
 test('getAll() when no data in db', function (t) {
   var set = Set(level('db1'))
 
@@ -176,5 +188,46 @@ test('same key on main db as in sublevel', function (t) {
     set.sublevel('foo').sublevel('bar').remove('hello', 'worldz3', done)
     set.sublevel('foo').sublevel('bar').add('hello', 'world3', done)
   })
+})
 
+test('streams', function (t) {
+  var db = level('streams')
+    , set = Set(db)
+
+  t.plan(3)
+
+  db.put('foo', JSON.stringify([1,2,3]), function () {
+    db.put('bar', JSON.stringify(['beep', 'boop']), function () {
+      collect(set.createReadStream(), function (array) {
+        t.deepEqual(
+            array
+          , [
+              {
+                  key: 'bar'
+                , value: ['beep', 'boop']
+              }
+            , {
+                  key: 'foo'
+                , value: [1, 2, 3]
+              }
+            ]
+        )
+      })
+      collect(set.createValueStream(), function (array) {
+        t.deepEqual(
+            array
+          , [
+                ['beep', 'boop']
+              , [1, 2, 3]
+            ]
+        )
+      })
+      collect(set.createKeyStream(), function (array) {
+        t.deepEqual(
+            array
+          , ['bar', 'foo']
+        )
+      })
+    })
+  })
 })
