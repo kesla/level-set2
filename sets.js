@@ -6,6 +6,8 @@ var encode = require('level-encode')
       if (!(this instanceof Sets))
         return new Sets(db, lock, child)
 
+      this._children = {}
+
       if (child) {
         this.db = db
         this.lock = lock
@@ -74,7 +76,9 @@ Sets.prototype.prefix = function (key) {
 }
 
 Sets.prototype.sublevel = function (sub) {
-  return new Sets(this.db.sublevel(sub), this.lock, true)
+  this._children[sub] = this._children[sub] || new Sets(this.db.sublevel(sub), this.lock, true)
+
+  return this._children[sub]
 }
 
 module.exports = Sets
