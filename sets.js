@@ -18,7 +18,7 @@ var encode = require('level-encode')
 Sets.prototype.add = function (key, value, callback) {
   var self = this
 
-  this.lock(key, function (release) {
+  this.lock(this.prefix(key), function (release) {
     callback = release(callback)
 
     self.getAll(key, function (err, array) {
@@ -51,7 +51,7 @@ Sets.prototype.getAll = function (key, callback) {
 Sets.prototype.remove = function (key, value, callback) {
   var self = this
 
-  this.lock(key, function (release) {
+  this.lock(this.prefix(key), function (release) {
     callback = release(callback)
 
     self.getAll(key, function (err, array) {
@@ -67,6 +67,10 @@ Sets.prototype.remove = function (key, value, callback) {
         self.db.put(key, array, callback)
     })
   })
+}
+
+Sets.prototype.prefix = function (key) {
+  return this.db.db.prefix ? this.db.db.prefix(key) : key
 }
 
 Sets.prototype.sublevel = function (sub) {
