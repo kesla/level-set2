@@ -6,8 +6,7 @@
   "dependencies": {
     "level-encode": "^1.2.2",
     "level-sublevel": "^5.2.0",
-    "async-cache": "^0.1.5",
-    "clone": "^0.1.15"
+    "async-cache": "^0.1.5"
   },
   "devDependencies": {
     "tap": "^0.4.9",

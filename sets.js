@@ -1,5 +1,4 @@
-var clone = require('clone')
-  , encode = require('level-encode')
+var encode = require('level-encode')
   , AsyncCache = require('async-cache')
 
   , Sets = function (db, cache, child) {
@@ -49,7 +48,7 @@ Sets.prototype.getAll = function (key, callback) {
     if (err)
       callback(err)
     else
-      callback(null, clone(array))
+      callback(null, array.slice(0))
   })
 }
 
