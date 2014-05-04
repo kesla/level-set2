@@ -5,11 +5,11 @@
   "main": "sets.js",
   "dependencies": {
     "level-encode": "^1.3.0",
-    "level-sublevel": "^5.2.0",
     "async-cache": "^0.1.5"
   },
   "devDependencies": {
     "tap": "^0.4.9",
+    "level-sublevel": "^5.2.0",
     "level-test": "^1.6.2"
   },
   "scripts": {
