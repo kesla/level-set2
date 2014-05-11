@@ -35,11 +35,33 @@ Sets.prototype.add = function (key, value, callback) {
   this.cache.get(this.prefix(key), function (err, array) {
     if (err) return callback(err)
 
-    if (array.indexOf(value) !== -1) return callback()
+    var min = 0
+      , max = array.length - 1
+      , ptr = 0
 
-    array.push(value)
+    if (array[min] === undefined || value > array[max]) {
+      array.push(value)
+      self.db.put(key, array, callback)
+    } else if (value < array[min]) {
+      array.unshift(value)
+      self.db.put(key, array, callback)
+    } else{
+      while(max - min > 1) {
+        ptr = Math.floor((max + min) / 2) 
 
-    self.db.put(key, array, callback)
+        if (array[ptr] > value)
+          max = ptr
+        else
+          min = ptr
+      }
+
+      if (array[ptr] === value) {
+        callback()
+      } else {
+        array.splice(ptr + 1, 0, value)
+        self.db.put(key, array, callback)
+      }
+    }
   })
 }
 
@@ -58,14 +80,34 @@ Sets.prototype.remove = function (key, value, callback) {
   this.cache.get(this.prefix(key), function (err, array) {
     if (err) return callback(err)
 
-    if (array.indexOf(value) === -1) return callback()
+    var min = 0
+      , max = array.length - 1
+      , ptr = 0
 
-    array.splice(array.indexOf(value), 1)
+    if (array[min] === undefined || value > array[max]) {
+      callback()
+    } else if (value < array[min]) {
+      callback()
+    } else{
+      while(max - min > 1) {
+        ptr = Math.floor((max + min) / 2) 
 
-    if (array.length === 0)
-      self.db.del(key, callback)
-    else
-      self.db.put(key, array, callback)
+        if (array[ptr] > value)
+          max = ptr
+        else
+          min = ptr
+      }
+
+      if (array[ptr] !== value) {
+        callback()
+      } else {
+        array.splice(ptr, 1)
+        if (array.length === 0)
+          self.db.del(key, callback)
+        else
+          self.db.put(key, array, callback)
+      }
+    }
   })
 }
 

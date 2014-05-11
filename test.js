@@ -16,7 +16,6 @@ var subLevel = require('level-sublevel')
       })
     }
 
-
 test('getAll() when no data in db', function (t) {
   var set = Set(level('db1'))
 
@@ -65,6 +64,28 @@ test('add()', function (t) {
         db.get('key', function (err, data) {
           t.equal(data, '["foo"]')
           t.end()
+        })
+      })
+    })
+  })
+})
+
+test('add() multiple', function (t) {
+  var db = level('add-multiple')
+    , set = Set(db)
+
+  set.add('key', 4, function () {
+    set.add('key', 2, function () {
+      set.add('key', 3, function () {
+        set.add('key', 1, function () {
+          set.add('key', 5, function () {
+            db.get('key', function (err, data) {
+              set.getAll('key', function (err, array) {
+                t.deepEqual(array, [1,2,3,4,5])
+                t.end()
+              })
+            })
+          })
         })
       })
     })
