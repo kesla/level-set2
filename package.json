@@ -4,8 +4,7 @@
   "description": "Treat a value in level like a Set",
   "main": "sets.js",
   "dependencies": {
-    "level-encode": "^1.3.0",
-    "async-cache": "^0.1.5"
+    "level-get-range": "^1.0.0"
   },
   "devDependencies": {
     "tap": "^0.4.9",
